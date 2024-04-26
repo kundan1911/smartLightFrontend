@@ -178,14 +178,14 @@ const Index = () => {
           <div className="flex justify-end">
             <div>
               <h3 className="text-sm font-semibold uppercase tracking-wider">
-                PicoStone Technologies
+              ILLUMINATE Technologies
               </h3>
               <p className="mt-4 text-base text-gray-300">
-                63, BMC Industrial Estate,
+                C/24, Asha Niketan,
                 <br />
-                Gandhi Nagar, Worli,
+                Manmala Tank Road, Matunga,
                 <br />
-                Mumbai – 400018
+                Mumbai – 400016
               </p>
             </div>
           </div>

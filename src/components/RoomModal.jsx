@@ -13,16 +13,24 @@ import Typography from '@mui/material/Typography';
 import image from '../assets/light-room.jpg';
 import Divider from '@mui/material/Divider';
 import { useNavigate } from 'react-router';
+import {
+  useUser
+} from "@clerk/clerk-react";
+import axios from "axios";
 
 export default function RoomModal() {
   const [open, setOpen] = React.useState(false);
   const [roomName, setRoomName] = React.useState('');
   const [cards, setCards] = React.useState([]);
-
+  const [callonce, setCall] = React.useState(1);
+  const { isSignedIn, user, isLoaded } = useUser();
+  const [roomData, setroomData] = React.useState([]);
+  const [currentEmail,setcurrentEmail]=React.useState();
   const navigate = useNavigate();
 
-  const handleCardClick = () => {
-    navigate('/configuration');
+  const handleCardClick = (roomId) => {
+    console.log("roomid is ",roomId);
+    navigate(`/configuration/${roomId}`);
   };
 
   const handleClickOpen = () => {
@@ -34,14 +42,41 @@ export default function RoomModal() {
   };
 
   const handleSubmit = () => {
-    console.log(roomName);
-    const newCard = {
-        id: Date.now(),
-        room: roomName,
-    };
-    setCards((prevCards) => [...prevCards, newCard]);
+    const userEmail=user.emailAddresses[0].emailAddress
+  console.log(roomName,userEmail);
+    axios
+      .post("http://localhost:5002/addRoom", {
+        roomName: roomName,
+        userEmail: userEmail,
+      })
+      .then((response) => {
+        console.log(response.data); // Assuming the server sends back a success message
+        setroomData((prevCards) => [...prevCards, response.data.room]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
     handleClose();
   };
+
+  const DisplayAllRooms = () => {
+    const email=user.emailAddresses[0].emailAddress
+    console.log("axios post data",email)
+    axios.get('http://localhost:5002/getAllRooms',{
+      params: {email} , // Use the updated chain value here
+    })
+      .then(response => {
+        setroomData(prevData => response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
+  if (callonce === 1) {
+    DisplayAllRooms();
+    setCall(2);
+  }
 
   const handleSubmitChange = (event) => {
     setRoomName(event.target.value);
@@ -77,10 +112,10 @@ export default function RoomModal() {
         </DialogActions>
       </Dialog>
       <Grid container spacing={2} sx={{ mt: 1, width: '100%' }}>
-        {cards.map((card) => (
-          <Grid item key={card.id} xs={12} sm={6} md={6} lg={6}>
+        {roomData.map((card) => (
+          <Grid item key={card.id} xs={6} sm={6} md={6} lg={3}>
             <Card 
-              onClick={handleCardClick}
+              onClick={()=>{handleCardClick(card.roomId)}}
             sx={{
                 cursor: 'pointer',
                 width: '200px',
@@ -102,7 +137,7 @@ export default function RoomModal() {
                 <Divider sx={{ margin: '8px 0' }} />
                 <Typography variant="body2"
                 sx={{ fontWeight: 'bold', fontSize: '16px', fontFamily: 'Verdana' }}
-                >{card.room}</Typography>
+                >{card.roomName}</Typography>
               </CardContent>
             </Card>
           </Grid>

@@ -15,11 +15,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import {
-  SignedIn,
+SignedIn,
   SignedOut,
   UserButton,
-  useUser,
-  useClerk,
+useUser,
+useClerk,
 } from "@clerk/clerk-react";
 
 function SignUpButton() {

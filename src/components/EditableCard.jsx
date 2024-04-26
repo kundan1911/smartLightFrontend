@@ -9,15 +9,21 @@ import AddIcon from "@mui/icons-material/Add";
 const EditableCard = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedNode, setEditedNode] = useState("");
-  //   const [controlledNode, setControlledNode] = useState('Initial Value');
+    const [controlledNode, setControlledNode] = useState(-1);
 
   const handleEditClick = () => {
     setIsEditing(true);
-    setEditedNode(controlledNode);
+setEditedNode(controlledNode);
   };
 
   const handleSaveClick = () => {
-    props.setcontrolledNode(editedNode);
+    setControlledNode(editedNode);
+    console.log(editedNode)
+    // console.log(props.lightData[editedNode-1])
+
+    // if(lightControll){
+      props.updateControllight(props.controlId, editedNode - 1);
+    // }
     setIsEditing(false);
   };
 
@@ -49,7 +55,10 @@ const EditableCard = (props) => {
     >
       <CardContent>
         <Typography variant="h6" component="div" sx={{ fontFamily: "Verdana" }}>
-          Device: {props.controlledNode}
+          Device: {props.index+1}
+        </Typography>
+        <Typography variant="h6" component="div" sx={{ fontFamily: "Verdana" }}>
+          Light Controlled: {controlledNode}
         </Typography>
         {isEditing ? (
           <>
